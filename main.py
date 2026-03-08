@@ -17,7 +17,19 @@ indicadores = [
     (indigena, "3.Etnia#Indígena"),
     (afro, "3.Etnia#Afro"),
     (afro_indigena, "3.Etnia#Afro e Indígena"),
-    (otras_etnias, "3.Etnia#Otras (ni afro ni indígena)")
+    (otras_etnias, "3.Etnia#Otras (ni afro ni indígena)"),
+    (no_asiste_preescolar, "4.No asistencia preescolar (3-5 años)"),
+    (no_asiste_escolar, "4.No asistencia escolar (6-17 años)"),
+    *[(no_asiste_por_edad[i], f"5.no_asiste_{i}") for i in range(6, 18)],
+    *[(no_asiste_por_edad_sexo[(e, s)], f"5.no_asiste_{e}_{l}") for e in range(6, 18) for s, l in [(1, "niño"), (2, "niña")]],
+    (maternidad_10_14, "7.Maternidad adolescente (10-14 años)"),
+    (maternidad_15_19, "7.Maternidad adolescente (15-19 años)"),
+    (maternidad_15_17, "7 Maternidad adolescente (15-17 años)"),
+    (trabajo_con_estudio_10_14, "8. Trabaja y estudia (10-14 años)"),
+    (trabajo_sin_estudio_10_14, "8. Trabaja y no estudia (10-14 años)"),
+    (trabajo_con_estudio_15_17, "8. Trabaja y estudia (15-17 años)"),
+    (trabajo_sin_estudio_15_17, "8. Trabaja y no estudia (15-17 años)"),
+    (agua_segura, "9. Acceso a agua segura")
 ]
 
 # ============================================================
