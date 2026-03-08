@@ -36,7 +36,7 @@ print("  [1/1] PERSONA + VIVIENDA")
 # ============================================================
 print("\nGenerando dataframes...")
 _n = 0
-_total = 13
+_total = 25
 
 # Total de NNA (0 a 17 años) - base para todos los demás df
 nna = df_persona[df_persona["P03_EDAD"].between(0, 17)]
@@ -104,6 +104,20 @@ no_asiste_escolar = nna[
     (nna["P14_ESCU"] == 2)  # 2=No
 ]
 _n += 1; print(f"  [{_n}/{_total}] no_asiste_escolar")
+
+# NNA que no asisten por edad simple (6 a 17 años) - lo hice loop para no escribir 1 por 1
+no_asiste_por_edad = {}
+for edad in range(6, 18):
+    no_asiste_por_edad[edad] = nna[
+        (nna["P03_EDAD"] == edad) &
+        (nna["P14_ESCU"] == 2)
+    ]
+    _n += 1; print(f"  [{_n}/{_total}] no_asiste_{edad}")
+
+
+    ################################################
+    ACA FALTA SOBREEDAD ESCOLAR
+    ################################################
 
 print("\nDataframes listos.")
 
