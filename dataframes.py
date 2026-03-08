@@ -36,7 +36,7 @@ print("  [1/1] PERSONA + VIVIENDA")
 # ============================================================
 print("\nGenerando dataframes...")
 _n = 0
-_total = 11
+_total = 13
 
 # Total de NNA (0 a 17 años) - base para todos los demás df
 nna = df_persona[df_persona["P03_EDAD"].between(0, 17)]
@@ -90,6 +90,20 @@ _n += 1; print(f"  [{_n}/{_total}] afro_indigena")
 # NNA otras etnias (ni indígenas ni afro, incluye no declarados)
 otras_etnias = nna[~(mask_indigena | mask_afro | mask_afro_indigena)]
 _n += 1; print(f"  [{_n}/{_total}] otras_etnias")
+
+# NNA que no asisten a educación preescolar (3 a 5 años)
+no_asiste_preescolar = nna[
+    (nna["P03_EDAD"].between(3, 5)) &
+    (nna["P14_ESCU"] == 2)  # 2=No
+]
+_n += 1; print(f"  [{_n}/{_total}] no_asiste_preescolar")
+
+# NNA que no asisten a educación escolar (6 a 17 años)
+no_asiste_escolar = nna[
+    (nna["P03_EDAD"].between(6, 17)) &
+    (nna["P14_ESCU"] == 2)  # 2=No
+]
+_n += 1; print(f"  [{_n}/{_total}] no_asiste_escolar")
 
 print("\nDataframes listos.")
 
