@@ -116,7 +116,7 @@ for edad in range(6, 18):
 
 
     ################################################
-    ACA FALTA SOBREEDAD ESCOLAR
+    ########ACA FALTA SOBREEDAD ESCOLAR#############
     ################################################
 
 print("\nDataframes listos.")
