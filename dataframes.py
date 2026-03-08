@@ -23,7 +23,7 @@ print("  [3/3] VIVIENDA cargada")
 # ============================================================
 print("\nRealizando joins...")
 df_persona = df_persona.merge(
-    df_vivienda[["LLAVEVIV", "V01_TIPO", "V08_AGUA"]],
+    df_vivienda[["LLAVEVIV", "V01_TIPO", "V08_AGUA", "V09_INST"]],
     on="LLAVEVIV",
     how="left"
 )
@@ -36,7 +36,7 @@ print("  [1/1] PERSONA + VIVIENDA")
 # ============================================================
 print("\nGenerando dataframes...")
 _n = 0
-_total = 25
+_total = 57
 
 # Total de NNA (0 a 17 años) - base para todos los demás df
 nna = df_persona[df_persona["P03_EDAD"].between(0, 17)]
@@ -114,10 +114,88 @@ for edad in range(6, 18):
     ]
     _n += 1; print(f"  [{_n}/{_total}] no_asiste_{edad}")
 
+no_asiste_por_edad_sexo = {}
+for edad in range(6, 18):
+    for sexo, label in [(1, "niño"), (2, "niña")]:
+        no_asiste_por_edad_sexo[(edad, sexo)] = nna[
+            (nna["P03_EDAD"] == edad) &
+            (nna["P14_ESCU"] == 2) &
+            (nna["P02_SEXO"] == sexo)
+            ]
+        _n += 1;
+        print(f"  [{_n}/{_total}] no_asiste_{edad}_{label}")
+
 
     ################################################
     ########ACA FALTA SOBREEDAD ESCOLAR#############
     ################################################
+
+# Maternidad adolescente: mujeres de 10 a 14 años con hijos nacidos vivos
+maternidad_10_14 = nna[
+    (nna["P03_EDAD"].between(10, 14)) &
+    (nna["P02_SEXO"] == 2) &
+    (nna["P23_HIJOS"] > 0) &
+    (nna["P23_HIJOS"] != 99)  # excluir no declarados
+    ]
+_n += 1; print(f"  [{_n}/{_total}] maternidad_10_14")
+
+# Maternidad adolescente: mujeres de 15 a 17 años con hijos nacidos vivos
+maternidad_15_19 = df_persona[
+    (df_persona["P03_EDAD"].between(15, 19)) &
+    (df_persona["P02_SEXO"] == 2) &
+    (df_persona["P23_HIJOS"] > 0) &
+    (df_persona["P23_HIJOS"] != 99)  # excluir no declarados
+    ]
+_n += 1; print(f"  [{_n}/{_total}] maternidad_15_19")
+
+# Maternidad adolescente: mujeres de 15 a 17 años con hijos nacidos vivos
+maternidad_15_17 = df_persona[
+    (df_persona["P03_EDAD"].between(15, 17)) &
+    (df_persona["P02_SEXO"] == 2) &
+    (df_persona["P23_HIJOS"] > 0) &
+    (df_persona["P23_HIJOS"] != 99)  # excluir no declarados
+    ]
+_n += 1; print(f"  [{_n}/{_total}] maternidad_15_17")
+
+# Trabajo infantil: 10 a 14 años, trabaja y no estudia
+trabajo_sin_estudio_10_14 = nna[
+    (nna["P03_EDAD"].between(10, 14)) &
+    (nna["P17_TRAB"] == 1) &    #si
+    (nna["P14_ESCU"] == 2)      #no
+]
+_n += 1; print(f"  [{_n}/{_total}] trabajo_sin_estudio_10_14")
+
+# Trabajo infantil: 10 a 14 años, trabaja y estudia
+trabajo_con_estudio_10_14 = nna[
+    (nna["P03_EDAD"].between(10, 14)) &
+    (nna["P17_TRAB"] == 1) &    #si
+    (nna["P14_ESCU"] == 1)      #si
+]
+_n += 1; print(f"  [{_n}/{_total}] trabajo_con_estudio_10_14")
+
+# Trabajo infantil: 15 a 17 años, trabaja y no estudia
+trabajo_sin_estudio_15_17 = nna[
+    (nna["P03_EDAD"].between(15, 17)) &
+    (nna["P17_TRAB"] == 1) &    #si
+    (nna["P14_ESCU"] == 2)      #no
+]
+_n += 1; print(f"  [{_n}/{_total}] trabajo_sin_estudio_15_17")
+
+# Trabajo infantil: 15 a 17 años, trabaja y estudia
+trabajo_con_estudio_15_17 = nna[
+    (nna["P03_EDAD"].between(15, 17)) &
+    (nna["P17_TRAB"] == 1) &    #si
+    (nna["P14_ESCU"] == 1)      #si
+]
+_n += 1; print(f"  [{_n}/{_total}] trabajo_con_estudio_15_17")
+
+# NNA con acceso a agua segura
+# (acueducto público/comunitario/particular con instalación interna) o (carro cisterna o agua embotellada)
+agua_segura = nna[
+    ((nna["V08_AGUA"].isin([1, 2, 3])) & (nna["V09_INST"] == 1)) |
+    (nna["V08_AGUA"].isin([9, 10]))
+]
+_n += 1; print(f"  [{_n}/{_total}] agua_segura")
 
 print("\nDataframes listos.")
 
