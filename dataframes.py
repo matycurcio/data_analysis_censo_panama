@@ -160,7 +160,7 @@ _n += 1; print(f"  [{_n}/{_total}] maternidad_15_17")
 # Trabajo infantil: 10 a 14 años, trabaja y no estudia
 trabajo_sin_estudio_10_14 = nna[
     (nna["P03_EDAD"].between(10, 14)) &
-    (nna["P17_TRAB"] == 1) &    #si
+    ((nna["P17_TRAB"] == 1) | (nna["P17A_TRABAUS"]==1) | (nna["P17B_ALGTRA"]==1) | (nna["P17C_ALGFAM"]==1)) &    #si
     (nna["P14_ESCU"] == 2)      #no
 ]
 _n += 1; print(f"  [{_n}/{_total}] trabajo_sin_estudio_10_14")
@@ -168,7 +168,7 @@ _n += 1; print(f"  [{_n}/{_total}] trabajo_sin_estudio_10_14")
 # Trabajo infantil: 10 a 14 años, trabaja y estudia
 trabajo_con_estudio_10_14 = nna[
     (nna["P03_EDAD"].between(10, 14)) &
-    (nna["P17_TRAB"] == 1) &    #si
+    ((nna["P17_TRAB"] == 1) | (nna["P17A_TRABAUS"]==1) | (nna["P17B_ALGTRA"]==1) | (nna["P17C_ALGFAM"]==1)) &    #si
     (nna["P14_ESCU"] == 1)      #si
 ]
 _n += 1; print(f"  [{_n}/{_total}] trabajo_con_estudio_10_14")
@@ -176,7 +176,7 @@ _n += 1; print(f"  [{_n}/{_total}] trabajo_con_estudio_10_14")
 # Trabajo infantil: 15 a 17 años, trabaja y no estudia
 trabajo_sin_estudio_15_17 = nna[
     (nna["P03_EDAD"].between(15, 17)) &
-    (nna["P17_TRAB"] == 1) &    #si
+    ((nna["P17_TRAB"] == 1) | (nna["P17A_TRABAUS"]==1) | (nna["P17B_ALGTRA"]==1) | (nna["P17C_ALGFAM"]==1)) &    #si
     (nna["P14_ESCU"] == 2)      #no
 ]
 _n += 1; print(f"  [{_n}/{_total}] trabajo_sin_estudio_15_17")
@@ -184,7 +184,7 @@ _n += 1; print(f"  [{_n}/{_total}] trabajo_sin_estudio_15_17")
 # Trabajo infantil: 15 a 17 años, trabaja y estudia
 trabajo_con_estudio_15_17 = nna[
     (nna["P03_EDAD"].between(15, 17)) &
-    (nna["P17_TRAB"] == 1) &    #si
+    ((nna["P17_TRAB"] == 1) | (nna["P17A_TRABAUS"]==1) | (nna["P17B_ALGTRA"]==1) | (nna["P17C_ALGFAM"]==1)) &    #si
     (nna["P14_ESCU"] == 1)      #si
 ]
 _n += 1; print(f"  [{_n}/{_total}] trabajo_con_estudio_15_17")
