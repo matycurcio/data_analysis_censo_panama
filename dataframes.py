@@ -157,37 +157,26 @@ maternidad_15_17 = df_persona[
     ]
 _n += 1; print(f"  [{_n}/{_total}] maternidad_15_17")
 
-# Trabajo infantil: 10 a 14 años, trabaja y no estudia
-trabajo_sin_estudio_10_14 = nna[
-    (nna["P03_EDAD"].between(10, 14)) &
-    ((nna["P17_TRAB"] == 1) | (nna["P17A_TRABAUS"]==1) | (nna["P17B_ALGTRA"]==1) | (nna["P17C_ALGFAM"]==1)) &    #si
-    (nna["P14_ESCU"] == 2)      #no
-]
-_n += 1; print(f"  [{_n}/{_total}] trabajo_sin_estudio_10_14")
+# Mask de trabajo (cualquiera de las 4 variables)
+mask_trabaja = (
+    (nna["P17_TRAB"] == 1) | (nna["P17A_TRABAUS"] == 1) |
+    (nna["P17B_ALGTRA"] == 1) | (nna["P17C_ALGFAM"] == 1)
+)
 
-# Trabajo infantil: 10 a 14 años, trabaja y estudia
-trabajo_con_estudio_10_14 = nna[
-    (nna["P03_EDAD"].between(10, 14)) &
-    ((nna["P17_TRAB"] == 1) | (nna["P17A_TRABAUS"]==1) | (nna["P17B_ALGTRA"]==1) | (nna["P17C_ALGFAM"]==1)) &    #si
-    (nna["P14_ESCU"] == 1)      #si
-]
-_n += 1; print(f"  [{_n}/{_total}] trabajo_con_estudio_10_14")
-
-# Trabajo infantil: 15 a 17 años, trabaja y no estudia
-trabajo_sin_estudio_15_17 = nna[
-    (nna["P03_EDAD"].between(15, 17)) &
-    ((nna["P17_TRAB"] == 1) | (nna["P17A_TRABAUS"]==1) | (nna["P17B_ALGTRA"]==1) | (nna["P17C_ALGFAM"]==1)) &    #si
-    (nna["P14_ESCU"] == 2)      #no
-]
-_n += 1; print(f"  [{_n}/{_total}] trabajo_sin_estudio_15_17")
-
-# Trabajo infantil: 15 a 17 años, trabaja y estudia
-trabajo_con_estudio_15_17 = nna[
-    (nna["P03_EDAD"].between(15, 17)) &
-    ((nna["P17_TRAB"] == 1) | (nna["P17A_TRABAUS"]==1) | (nna["P17B_ALGTRA"]==1) | (nna["P17C_ALGFAM"]==1)) &    #si
-    (nna["P14_ESCU"] == 1)      #si
-]
-_n += 1; print(f"  [{_n}/{_total}] trabajo_con_estudio_15_17")
+trabajo = {}
+for rango, label_edad in [((10, 14), "10_14"), ((15, 17), "15_17")]:
+    for sexo, label_sexo in [(1, "niño"), (2, "niña")]:
+        for trabaja, label_trabajo in [(True, "trabaja"), (False, "no_trabaja")]:
+            for estudia, label_estudio in [(1, "estudia"), (2, "no_estudia")]:
+                key = f"{label_edad}_{label_sexo}_{label_trabajo}_{label_estudio}"
+                mask_trabajo = mask_trabaja if trabaja else ~mask_trabaja
+                trabajo[key] = nna[
+                    (nna["P03_EDAD"].between(*rango)) &
+                    (nna["P02_SEXO"] == sexo) &
+                    mask_trabajo &
+                    (nna["P14_ESCU"] == estudia)
+                ]
+                _n += 1; print(f"  [{_n}/{_total}] trabajo_{key}")
 
 # NNA con acceso a agua segura
 # (acueducto público/comunitario/particular con instalación interna) o (carro cisterna o agua embotellada)
@@ -196,6 +185,11 @@ agua_segura = nna[
     (nna["V08_AGUA"].isin([9, 10]))
 ]
 _n += 1; print(f"  [{_n}/{_total}] agua_segura")
+
+################################################
+###########ACA FALTA HACINAMIENTO###############
+################################################
+
 
 print("\nDataframes listos.")
 

@@ -25,10 +25,7 @@ indicadores = [
     (maternidad_10_14, "7.Maternidad adolescente (10-14 años)"),
     (maternidad_15_19, "7.Maternidad adolescente (15-19 años)"),
     (maternidad_15_17, "7 Maternidad adolescente (15-17 años)"),
-    (trabajo_con_estudio_10_14, "8. Trabaja y estudia (10-14 años)"),
-    (trabajo_sin_estudio_10_14, "8. Trabaja y no estudia (10-14 años)"),
-    (trabajo_con_estudio_15_17, "8. Trabaja y estudia (15-17 años)"),
-    (trabajo_sin_estudio_15_17, "8. Trabaja y no estudia (15-17 años)"),
+    *[(trabajo[k], f"8.trabajo_{k}") for k in trabajo],
     (agua_segura, "9. Acceso a agua segura")
 ]
 
