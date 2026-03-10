@@ -7,28 +7,51 @@ from dataframes import *
 # Cada tupla es (dataframe, nombre de columna en el resultado)
 # ============================================================
 indicadores = [
-    (nna, "0.#TotalNNA"),
-    (hogares_con_nna, "0. #TotalHogaresconNNA"),
-    (ninos, "1.#Niños"),
-    (ninas, "2.#Niñas"),
-    (nna_0_6, "2.Edad#0-6"),
-    (nna_7_12,"2.Edad#7-12"),
-    (nna_13_17,"2.Edad#13-17"),
+    (df_persona, "1.#TotalPersonasenHogPart"),
+    (nna, "1.#TotalNNAenHogPart"),
+    (ninos, "1.NNASexo #Hombres"),
+    (ninas, "1.NNASexo #Mujeres"),
+    *[(nna_por_rango_sexo[k], f"1.nna_{k}") for k in nna_por_rango_sexo],
+    (df_hogar, "1.#TotalHogaresPart"),
+    (hogares_con_nna, "1. #TotalHogaresconNNA"),
+    (nna_jefe["mig_internacional"], "NNA con jefe migrante internacional"),
+    (nna_jefe["mig_nacional"], "NNA con jefe migrante nacional"),
+    (nna_jefe["no_mig"], "NNA con jefe no migrante"),
     (indigena, "3.Etnia#Indígena"),
     (afro, "3.Etnia#Afro"),
     (afro_indigena, "3.Etnia#Afro e Indígena"),
     (otras_etnias, "3.Etnia#Otras (ni afro ni indígena)"),
-    (no_asiste_preescolar, "4.No asistencia preescolar (3-5 años)"),
-    (no_asiste_escolar, "4.No asistencia escolar (6-17 años)"),
-    *[(no_asiste_por_edad[i], f"5.no_asiste_{i}") for i in range(6, 18)],
-    *[(no_asiste_por_edad_sexo[(e, s)], f"5.no_asiste_{e}_{l}") for e in range(6, 18) for s, l in [(1, "niño"), (2, "niña")]],
-    (maternidad_10_14, "7.Maternidad adolescente (10-14 años)"),
-    (maternidad_15_19, "7.Maternidad adolescente (15-19 años)"),
-    (maternidad_15_17, "7 Maternidad adolescente (15-17 años)"),
-    *[(trabajo[k], f"8.trabajo_{k}") for k in trabajo],
-    (agua_segura, "9. Acceso a agua segura")
+    *[(asistencia_por_edad_sexo[k], f"4y5. Asistencia escolar. #{('Niñas' if 'nina' in k else 'Niños')} {k.split('_')[0]} años {'dentro' if 'dentro' in k else 'fuera'} del sistema educativo") for k in asistencia_por_edad_sexo],
+    (sobreedad, "6. Sobreedad. #NNA 8-19años con rezago escolar"),
+    (sin_sobreedad, "6. Sobreedad. #NNA 8-19años sin rezago escolar"),
+    (maternidad_10_14, "7. Maternidad adolescente #niñas 10-14años madres"),
+    (no_maternidad_10_14, "7. Maternidad adolescente #niñas 10-14años NO madres"),
+    (maternidad_15_19, "7. Maternidad adolescente #niñas 15-19años madres"),
+    (no_maternidad_15_19, "7. Maternidad adolescente #niñas 15-19años NO madres"),
+    (maternidad_15_17, "7. Maternidad adolescente #niñas 15-17años madres"),
+    (no_maternidad_15_17, "7. Maternidad adolescente #niñas 15-17años NO madres"),
+    *[(df, titulo) for df, titulo in trabajo.values()],
+    (agua_segura, "9. Agua segura. #NNA con acceso a agua segura"),
+    (agua_no_segura, "9. Agua segura. #NNA sin acceso a agua segura"),
+    (hacinado,    "10. Hacinamiento: Cantidad de NNA que habitan en condiciones de hacinamiento"),
+    (no_hacinado, "10. Hacinamiento: Cantidad de NNA que NO habitan en condiciones de hacinamiento"),
+    (nna_jefe_ocupado,    "11. Condición de actividad del jefe. # de NNA que viven en hogares con jefe de hogar ocupado"),
+    (nna_jefe_desocupado, "11. Condición de actividad del jefe. # de NNA que viven en hogares con jefe de hogar desocupado"),
+    (nna_jefe_inactivo,   "11. Condición de actividad del jefe. # de NNA que viven en hogares con jefe de hogar inactivo"),
+    (nna_jefe_nsnc,       "11. Condición de actividad del jefe. # de NNA que viven en hogares con jefe de hogar NS/NC"),
+    (con_seguro, "12. Acceso a seguro social: # NNA CON acceso al seguro social"),
+    (sin_seguro, "12. Acceso a seguro social: # NNA SIN acceso al seguro social"),
+    (con_transferencias, "13. Acceso a transferencias sociales: # NNA CON acceso TS"),
+    (sin_transferencias, "13. Acceso a transferencias sociales: # NNA SIN acceso TS"),
+    (con_beca, "14. Acceso a becas: # NNA CON acceso a becas"),
+    (sin_beca, "14. Acceso a becas: # NNA SIN acceso a becas"),
+    (con_internet, "15. Acceso a internet. #NNA CON acceso a internet"),
+    (sin_internet, "15. Acceso a internet. #NNA SIN acceso a internet")
 ]
 
+for df, nombre in indicadores:
+    if "PROVINCIA" not in df.columns:
+        print(f"Falta PROVINCIA en: {nombre}")
 # ============================================================
 # MERGE DE TODAS LAS TABLAS
 # Se parte de la primera tabla y se van uniendo las demás
