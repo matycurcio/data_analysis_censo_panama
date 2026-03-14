@@ -44,7 +44,7 @@ print("  [2/2] HOGAR + VIVIENDA")
 # ============================================================
 print("\nGenerando dataframes...")
 _n = 0
-_total = 113 ##esto esta hardcodeado, es solo para los logs
+_total = 114 ##esto esta hardcodeado, es solo para los logs
 
 # Total de NNA (0 a 17 años) - base para todos los demás df
 nna = df_persona[df_persona["P03_EDAD"].between(0, 17)]
@@ -151,25 +151,30 @@ for edad in range(4, 18):
             _n += 1; print(f"  [{_n}/{_total}] asistencia_{key}")
 
 
-# Sobreedad: NNA (hasta 19) cuyo grado corresponde a una edad mayor a la esperada
+# Base: personas 8-19 con y sin sobreedad
 sobreedad_map = {
+    1: 8,   2: 8,   3: 8,
     11: 8,  12: 9,  13: 10, 14: 11, 15: 12, 16: 13,
     31: 14, 32: 15, 33: 16,
     21: 14, 22: 15, 23: 16,
     34: 17, 35: 18, 36: 19
 }
 
-nna_8_19 = df_persona[df_persona["P03_EDAD"].between(8, 19)]
+personas_8_19 = df_persona[
+    (df_persona["P03_EDAD"].between(8, 19)) &
+    (df_persona["P03_EDAD"] != 999) &
+    (df_persona["P15_GRADO"] != 99)
+]
 
-mask_sobreedad = pd.Series(False, index=nna_8_19.index)
+mask_sobreedad = pd.Series(False, index=personas_8_19.index)
 for grado, edad_min in sobreedad_map.items():
-    mask_sobreedad |= (nna_8_19["P15_GRADO"] == grado) & (nna_8_19["P03_EDAD"] == edad_min)
+    mask_sobreedad |= (personas_8_19["P15_GRADO"] == grado) & (personas_8_19["P03_EDAD"] >= edad_min)
 
-sobreedad     = nna_8_19[mask_sobreedad]
-sin_sobreedad = nna_8_19[~mask_sobreedad]
+sobreedad     = personas_8_19[mask_sobreedad]
+sin_sobreedad = personas_8_19[~mask_sobreedad]
+_n += 1; print(f"  [{_n}/{_total}] personas_8_19")
 _n += 1; print(f"  [{_n}/{_total}] sobreedad")
 _n += 1; print(f"  [{_n}/{_total}] sin_sobreedad")
-
 ################################################################
 # Maternidad adolescente
 

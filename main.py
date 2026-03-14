@@ -22,6 +22,7 @@ indicadores = [
     (afro_indigena, "3.Etnia#Afro e Indígena"),
     (otras_etnias, "3.Etnia#Otras (ni afro ni indígena)"),
     *[(asistencia_por_edad_sexo[k], f"4y5. Asistencia escolar. #{('Niñas' if 'nina' in k else 'Niños')} {k.split('_')[0]} años {'dentro' if 'dentro' in k else 'fuera'} del sistema educativo") for k in asistencia_por_edad_sexo],
+    (personas_8_19, "6A. Sobreedad. #Total personas 8-19 años viviendo en casas particulares"),
     (sobreedad, "6. Sobreedad. #NNA 8-19años con rezago escolar"),
     (sin_sobreedad, "6. Sobreedad. #NNA 8-19años sin rezago escolar"),
     (maternidad_10_14, "7. Maternidad adolescente #niñas 10-14años madres"),
@@ -64,8 +65,17 @@ for t in tablas[1:]:
     cols = [c for c in t.columns if c not in ["nivel", "orden_nivel"]]
     resultado = resultado.merge(t[cols], on="codigo", how="left")
 
-# Mover columna nivel al final y eliminarla
-cols = [c for c in resultado.columns if c != "nivel"]
+# ============================================================
+# MAPEO DE NOMBRES GEOGRÁFICOS
+# ============================================================
+geo = pd.read_excel("ddbb/mapeo nombre codigo.xlsx", dtype={"code": str})
+resultado = resultado.merge(
+    geo.rename(columns={"code": "codigo", "name": "nombre"}),
+    on="codigo",
+    how="left"
+)
+
+cols = ["codigo", "nivel"] + [c for c in resultado.columns if c not in ["codigo", "nivel"]]
 resultado = resultado[cols]
 
 # ============================================================
